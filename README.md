@@ -82,4 +82,16 @@ You can find payloads of Windows and linux with file uploads of this repositorie
   ##### Top 7 authentification failure
   ##### Top 8 failure integrity data
   ##### Top 9 journalisation defect
-  ##### Top 10 SSRF breac
+  ## *Top 10*./ SSRF (Server-Side Request Forgery)
+Permet sur une application web (API) de faire une requete avec le server. (like preview button)
+Une fois la faille SSRF découverte on peut tester de faire des requetes interne comme :
+```bash
+http://127.0.0.1:<port>/
+http://localhost/API/endpoint
+http://localhost/admin
+http://<common_cloud_IP_addr>/
+```
+Utiliser Burpsuite ou FFUF pour analyser les réponses server.
+```bash
+ffuf --request req.txt -w /path/wordlist -u http://example.com/
+```
