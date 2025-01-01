@@ -52,14 +52,27 @@ Analyse every error message, its a good practise for what can you do and what ca
   ### Command injection
 Try this basic caracters and add command like `dir` or `cat /etc/passwd`.
 ```text
+%09
+${IFS}
 ;
+%3b
+\n
+%0a
 |
+%7c
 &
+%26
 &&
+%26%26
 ||
+%7c%7c
+''
+%60%60
 $(...)
+%24%28%29
 `...`
 '''
+%60%60%60
 ```
 You can find payloads of Windows and linux with file uploads of this repositorie
   ### XSS (Cross Site Scripting)
