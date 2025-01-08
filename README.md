@@ -138,6 +138,8 @@ To identify XEE finding web pages that accept an XML or JSON user input with Bur
 
   ## *Top 6 composant vulnerability*
   ## *Top 7 authentification failure*
+  Part of web application where authentification can be attack. (ex: login forms)
+  
   ## *Top 8 failure integrity data*
   ## *Top 9 journalisation defect*
   ## *Top 10./ SSRF (Server-Side Request Forgery), SSTI (Server-Side Template Injection), SSI (Server-Side Includes)*
