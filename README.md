@@ -2,9 +2,67 @@
 [Top 10 official OWASP](https://owasp.org/www-project-top-ten/)
 
 
+Pentest processing:  
 ![](Pentest_process.png)
 
 ## *Top 0./ Web Reconnaissance*
+
+**Active Reconnaissance**   
+
+| Technique            | Tools                                      | Risk of Detection                              |
+|----------------------|--------------------------------------------|------------------------------------------------|
+| Port Scanning        | Nmap, Masscan, Unicornscan                 | High: Direct interaction with the target can trigger intrusion detection systems (IDS) and firewalls. |
+| Vulnerability Scanning| Nessus, OpenVAS, Nikto                    | High: Vulnerability scanners send exploit payloads that security solutions can detect. |
+| Network Mapping       | Traceroute, Nmap                          | Medium to High: Excessive or unusual network traffic can raise suspicion. |
+| Banner Grabbing       | Netcat, curl                              | Low: Banner grabbing typically involves minimal interaction but can still be logged. |
+| OS Fingerprinting     | Nmap, Xprobe2                             | Low: OS fingerprinting is usually passive, but some advanced techniques can be detected. |
+| Service Enumeration   | Nmap                                       | Low: Similar to banner grabbing, service enumeration can be logged but is less likely to trigger alerts. |
+| Web Spidering         | Burp Suite Spider, OWASP ZAP Spider, Scrapy | Low to Medium: Can be detected if the crawler's behaviour is not carefully configured to mimic legitimate traffic. |
+
+**Passive Reconnaissance**  
+
+| Technique             | Tools                                                  | Risk of Detection                                        |
+|-----------------------|--------------------------------------------------------|----------------------------------------------------------|
+| Search Engine Queries | Google, DuckDuckGo, Bing, Shodan                       | Very Low: Search engine queries are normal internet activity and unlikely to trigger alerts. |
+| WHOIS Lookups         | whois command-line tool, online WHOIS lookup services | Very Low: WHOIS queries are legitimate and do not raise suspicion. |
+| DNS                   | dig, nslookup, host, dnsenum, fierce, dnsrecon         | Very Low: DNS queries are essential for internet browsing and are not typically flagged as suspicious. |
+| Web Archive Analysis  | Wayback Machine                                         | Very Low: Accessing archived versions of websites is a normal activity. |
+| Social Media Analysis | LinkedIn, Twitter, Facebook, specialised OSINT tools  | Very Low: Accessing public social media profiles is not considered intrusive. |
+| Code Repositories     | GitHub, GitLab                                         | Very Low: Code repositories are meant for public access, and searching them is not suspicious. |
+
+**WHOIS**  
+
+WHOIS is designed to access databases that store information about registered internet resources. WHOIS can also provide details about IP address blocks and autonomous systems.   
+He can be useful for `Phishing Investigation`, `Malware Analysis`, `Threat Intelligence Report`,...   
+```bash
+whois facebook.com
+```
+
+**DIG**  
+The dig command (Domain Information Groper) is a versatile and powerful utility for querying DNS servers and retrieving various types of DNS records.  
+Here some basics commands :  
+| Command                                | Description                                                            |
+|----------------------------------------|------------------------------------------------------------------------|
+| `dig domain.com`                       | Performs a default A record lookup for the domain.                     |
+| `dig domain.com A`                     | Retrieves the IPv4 address (A record) associated with the domain.      |
+| `dig domain.com AAAA`                  | Retrieves the IPv6 address (AAAA record) associated with the domain.   |
+| `dig domain.com MX`                    | Finds the mail servers (MX records) responsible for the domain.        |
+| `dig domain.com NS`                    | Identifies the authoritative name servers for the domain.             |
+| `dig domain.com TXT`                   | Retrieves any TXT records associated with the domain.                  |
+| `dig domain.com CNAME`                 | Retrieves the canonical name (CNAME) record for the domain.            |
+| `dig domain.com SOA`                   | Retrieves the start of authority (SOA) record for the domain.          |
+| `dig @1.1.1.1 domain.com`              | Specifies a specific name server to query; in this case 1.1.1.1.       |
+| `dig +trace domain.com`                | Shows the full path of DNS resolution.                                 |
+| `dig -x 192.168.1.1`                  | Performs a reverse lookup on the IP address 192.168.1.1 to find the associated host name. |
+| `dig +short domain.com`                | Provides a short, concise answer to the query.                         |
+| `dig +noall +answer domain.com`        | Displays only the answer section of the query output.                  |
+| `dig domain.com ANY`                   | Retrieves all available DNS records for the domain.                    |
+
+**DNS Brut forcing**  
+You can brut force with ffuf and seclist but here some commands with DNSENUM:  
+```bash
+dnsenum --enum inlanefreight.com -f  /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt
+```
 
 
 ## *Top 1./ Broken acces control*
