@@ -660,3 +660,17 @@ To bypass anti-CSRF protections, we can try changing the request method. From PO
 Delete the CSRF token parameter or send a blank token  
 If an application is using the referrer header as an anti-CSRF mechanism, you can try removing the referrer header. Add the following meta tag to your page hosting your CSRF script. `<meta name="referrer" content="no-referrer"`  
 Sometimes the Referrer has a whitelist regex or a regex that allows one specific domain. 
+
+## *Top 14./ Wordpress*  
+
+Can find version of wordpress, wp plugins,  in index.html source code:   
+- `<meta name="generator" content="WordPress 5.3.3" />`  
+- `<script type='text/javascript' src='http://blog.inlanefreight.com/wp-content/plugins/mail-masta/lib/subscriber.js?ver=5.3.3'></script>`  
+- `<link rel='stylesheet' id='bootstrap-css'  href='http://blog.inlanefreight.com/wp-content/themes/ben_theme/css/bootstrap.css?ver=5.3.3' type='text/css' media='all' />`
+
+brutforce plugins and themes
+```bash
+ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/CMS/wp-plugins.FUZZ.txt -u http://example.com/FUZZ
+ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/CMS/wp-themes.FUZZ.txt -u http://example.com/FUZZ
+ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/CMS/wordpress.FUZZ.txt -u http://example.com/FUZZ
+```
