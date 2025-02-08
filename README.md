@@ -429,7 +429,29 @@ Or remove value in Location request response
 
   Test default credential : [CIRT.net](https://www.cirt.net/passwords)
   
-  ## *Top 8 failure integrity data*
+  ## *Top 8 failure integrity data* 
+  Website unintentionally reveals sensitive information, example:
+  - Revealing the names of hidden directories, their structure, and their contents via a robots.txt file or directory listing
+  - Providing access to source code files via temporary backups
+  - Explicitly mentioning database table or column names in error messages
+  - Unnecessarily exposing highly sensitive information, such as credit card details
+  - Hard-coding API keys, IP addresses, database credentials, and so on in the source code
+  - Hinting at the existence or absence of resources, usernames, and so on via subtle differences in application behavior
+
+
+  **Common sources of inforrmation discolsure:**
+  - Files for web crawlers
+  - Directory listings
+  - Developer comments
+  - Error messages LABS
+  - Debugging data LABS
+  - User account pages LABS
+  - Backup files LABS
+  - Insecure configuration LABS
+  - Version control history 
+  
+
+  
   ## *Top 9 journalisation defect*
   ## *Top 10./ SSRF (Server-Side Request Forgery), SSTI (Server-Side Template Injection), SSI (Server-Side Includes)*
   **A chercher dans des boutons qui affichent directement un retour sans charger la page ou quand le site pense faire une requete vers une autre site**
